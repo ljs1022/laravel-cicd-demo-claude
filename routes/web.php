@@ -16,3 +16,28 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/health', function () {
+    $checks = [
+        'database' => checkDatabase(),
+        'cache' => checkCache(),
+    ];
+
+    $status = collect($checks)->every(fn($v) => $v) ? 'ok' : 'error';
+    $code = $status === 'ok' ? 200 : 500;
+
+    return response()->json([
+        'status' => $status,
+        'checks' => $checks,
+        'timestamp' => now()->toISOString(),
+    ], $code);
+});
+
+function checkDatabase(): bool {
+    try {
+        DB::connection()->getPdo();
+        return true;
+    } catch (\Exception $e) {
+        return false;
+    }
+}
