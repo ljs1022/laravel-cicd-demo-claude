@@ -8,6 +8,9 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    depends_on:
+      mysql:
+        condition: service_healthy
     volumes:
       - storage:/var/www/html/storage
     networks:
@@ -27,8 +30,28 @@ services:
     networks:
       - laravel
 
+  mysql:
+    image: mysql:8.0
+    container_name: laravel-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - laravel
+
 volumes:
   storage:
+  db-data:
 
 networks:
   laravel:
