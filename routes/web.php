@@ -20,7 +20,6 @@ Route::get('/', function () {
 Route::get('/health', function () {
     $checks = [
         'database' => checkDatabase(),
-        'cache' => checkCache(),
     ];
 
     $status = collect($checks)->every(fn ($v) => $v) ? 'ok' : 'error';
