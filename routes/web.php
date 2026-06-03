@@ -23,7 +23,7 @@ Route::get('/health', function () {
         'cache' => checkCache(),
     ];
 
-    $status = collect($checks)->every(fn($v) => $v) ? 'ok' : 'error';
+    $status = collect($checks)->every(fn ($v) => $v) ? 'ok' : 'error';
     $code = $status === 'ok' ? 200 : 500;
 
     return response()->json([
@@ -33,11 +33,13 @@ Route::get('/health', function () {
     ], $code);
 });
 
-function checkDatabase(): bool {
+function checkDatabase(): bool
+{
     try {
         DB::connection()->getPdo();
+
         return true;
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         return false;
     }
 }
