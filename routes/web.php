@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::get('/health', function () {
-    $checks = [
+        $checks = [
         'database' => checkDatabase(),
     ];
 
