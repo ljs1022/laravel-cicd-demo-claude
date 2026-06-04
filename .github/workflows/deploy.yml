@@ -59,14 +59,9 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          command_timeout: 5m
           script: |
             cd ~/laravel-cicd-demo-claude
             docker compose pull
             docker compose up -d --force-recreate
             docker image prune -f
-
-      - name: Health check
-        run: |
-          echo "Waiting for service to start..."
-          sleep 10
-          curl --fail --retry 5 --retry-delay 5 http://${{ secrets.SERVER_HOST }}/health
